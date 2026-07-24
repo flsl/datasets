@@ -209,6 +209,14 @@
             background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
         }
 
+        .tag.keypoint {
+            background: linear-gradient(135deg, #fa709a 0%, #f093fb 100%);
+        }
+
+        .tag.classify {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
         .dataset-info {
             display: flex;
             justify-content: flex-end;
@@ -415,11 +423,19 @@
             </div>
             <div class="stat-item">
                 <div class="stat-number" id="yoloCount">0</div>
-                <div class="stat-label">YOLO格式</div>
+                <div class="stat-label">目标检测</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="keypointCount">0</div>
+                <div class="stat-label">关键点</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number" id="labelmeCount">0</div>
-                <div class="stat-label">Labelme格式</div>
+                <div class="stat-label">实例分割</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="classifyCount">0</div>
+                <div class="stat-label">图像分类</div>
             </div>
         </div>
 
@@ -455,10 +471,23 @@
 
         function getTagClass(format) {
             switch(format) {
-                case 'YOLO': return 'tag yolo';
-                case 'Labelme': return 'tag labelme';
+                case 'Y': return 'tag yolo';
+                case 'L': return 'tag labelme';
+                case 'K': return 'tag keypoint';
+                case 'C': return 'tag classify';
                 case '分类': return 'tag classification';
                 default: return 'tag';
+            }
+        }
+
+        function getFormatName(format) {
+            switch(format) {
+                case 'Y': return 'YOLO';
+                case 'L': return 'Labelme';
+                case 'K': return 'KEYPOINT';
+                case 'C': return 'CLASSIFY';
+                case '分类': return '分类';
+                default: return format;
             }
         }
 
@@ -506,7 +535,7 @@
                     <div class="dataset-card">
                         <h3 class="dataset-name">${item.name}</h3>
                         <div class="dataset-tags">
-                            <span class="${getTagClass(item.format)}">${item.format}</span>
+                            <span class="${getTagClass(item.format)}">${getFormatName(item.format)}</span>
                         </div>
                         <div class="dataset-info">
                             <button class="download-btn ${hasUrl ? '' : 'disabled'}" onclick="handleDownload('${item.url}')">
@@ -519,12 +548,16 @@
         }
 
         function updateStats() {
-            const yoloCount = datasets.filter(d => d.format === 'YOLO').length;
-            const labelmeCount = datasets.filter(d => d.format === 'Labelme').length;
+            const yoloCount = datasets.filter(d => d.format === 'Y').length;
+            const keypointCount = datasets.filter(d => d.format === 'K').length;
+            const labelmeCount = datasets.filter(d => d.format === 'L').length;
+            const classifyCount = datasets.filter(d => d.format === 'C').length;
             
             document.getElementById('totalCount').textContent = datasets.length;
             document.getElementById('yoloCount').textContent = yoloCount;
+            document.getElementById('keypointCount').textContent = keypointCount;
             document.getElementById('labelmeCount').textContent = labelmeCount;
+            document.getElementById('classifyCount').textContent = classifyCount;
         }
 
         function search() {
